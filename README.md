@@ -8,6 +8,7 @@ Les documents à imprimer pour la vente de caramels de l'APEL du collège Notre 
 |---|---|---|
 | [📄 Flyer de commande](https://apelnotredamebroons.github.io/caramels-2026/flyer.html) | Les clients : ils le remplissent et le rendent avec leur règlement | 2 flyers par A4 paysage (à découper), ou 1 flyer en A5 |
 | [📒 Carnet du vendeur](https://apelnotredamebroons.github.io/caramels-2026/fiche-vendeur.html) | Les élèves vendeurs : ils y notent leurs clients, ce qu'ils ont payé et ce qui a été livré | A4 paysage **recto/verso**, avec une page en plus pour les grands vendeurs si besoin |
+| [📱 Carnet de ventes](https://apelnotredamebroons.github.io/caramels-2026/carnet-ventes.html) | Les élèves vendeurs, sur le téléphone des parents : la version numérique du carnet, avec les totaux calculés tout seuls | Rien à imprimer. Astuce : « Ajouter à l'écran d'accueil » |
 
 ## Imprimer
 
