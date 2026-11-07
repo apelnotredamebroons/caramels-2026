@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APEL – Opération Caramels – Carnet du vendeur</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        /* ──────────────────────────────────────────────────────────────
+           PALETTE (identique au flyer) + une couleur par parfum
+           ────────────────────────────────────────────────────────────── */
+        :root {
+            --principal: #8B4A1C;
+            --principal-dark: #5E2F10;
+            --or: #D9A05B;
+            --or-dark: #A8702F;
+            --texte: #3B2314;
+            --texte-doux: #76604F;
+            --fond-page: #EFE4D6;
+            --fond-feuille: #FFFAF3;
+            --fond-ligne: #F8ECDC;
+            --bordure: #C9B497;
+            --titre-font: 'Lobster', 'Georgia', serif;
+
+            /* Les étiquettes des pots sont toutes identiques : ces couleurs
+               servent seulement à suivre la bonne colonne d'un coup d'œil. */
+            --nature: #E0A23B;
+            --vanille: #E9CC55;
+            --sarrasin: #8FAE5D;
+            --tonka: #9D7FC0;
+            --chocamel: #5B3A24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--fond-page);
+            font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
+            color: var(--texte);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 24px 20px 60px;
+        }
+
+        /* ── BARRE DE CONTRÔLE (masquée à l'impression) ────────────── */
+        .controls {
+            background: #fff;
+            padding: 12px 22px;
+            border-radius: 12px;
+            border: 2px solid var(--principal);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .controls h2 {
+            font-size: 15px;
+            color: var(--principal-dark);
+        }
+
+        .controls button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: var(--or);
+            color: var(--texte);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .controls button:hover {
+            background: var(--or-dark);
+            color: #fff;
+        }
+
+        /* ──────────────────────────────────────────────────────────────
+           FEUILLE A4 PAYSAGE
+           ────────────────────────────────────────────────────────────── */
+        .sheet {
+            width: 297mm;
+            height: 210mm;
+            padding: 7mm 9mm 6mm;
+            display: flex;
+            flex-direction: column;
+            gap: 3mm;
+            background: var(--fond-feuille);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+            font-size: 9.5pt;
+            line-height: 1.3;
+            overflow: hidden;
+        }
+
+        /* Toutes les feuilles s'affichent à l'écran ; à l'impression,
+           soit le carnet (recto/verso), soit la seule page en plus. */
+        @media print {
+
+            body.extra .sheet:not(.sheet-extra),
+            body:not(.extra) .sheet-extra {
+                display: none;
+            }
+        }
+
+        /* ── En-tête ──────────────────────────────────────────────── */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 5mm;
+            border-bottom: 2px solid var(--or);
+            padding-bottom: 2mm;
+        }
+
+        .logo-apel {
+            display: block;
+            width: 20mm;
+            height: auto;
+        }
+
+        .header-text {
+            flex: 0 0 auto;
+        }
+
+        .operation-label {
+            font-size: 8pt;
+            font-weight: 700;
+            color: var(--or-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .title {
+            font-family: var(--titre-font);
+            font-weight: 400;
+            font-size: 24pt;
+            line-height: 1.05;
+            color: var(--principal);
+        }
+
+        .title .small {
+            font-size: 0.65em;
+            color: var(--or-dark);
+        }
+
+        .header-small .title {
+            font-size: 16pt;
+        }
+
+        .vendeur {
+            flex: 1;
+            display: flex;
+            gap: 4mm;
+            margin-left: 4mm;
+        }
+
+        .field {
+            display: flex;
+            align-items: flex-end;
+            gap: 2mm;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .field.small {
+            flex: 0 0 32mm;
+        }
+
+        .field .line {
+            flex: 1;
+            border-bottom: 1px solid var(--texte-doux);
+            height: 7mm;
+        }
+
+        /* ── Encadrés d'infos (recto) ─────────────────────────────── */
+        .infos {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 1fr 1.15fr;
+            gap: 3mm;
+        }
+
+        .box {
+            background: var(--fond-ligne);
+            border-left: 4px solid var(--or);
+            border-radius: 2mm;
+            padding: 2mm 3mm;
+            font-size: 8.5pt;
+            line-height: 1.3;
+        }
+
+        .box h3 {
+            font-size: 9.5pt;
+            color: var(--principal-dark);
+            margin-bottom: 1mm;
+        }
+
+        .box ul {
+            list-style: none;
+        }
+
+        .box li+li {
+            margin-top: 0.6mm;
+        }
+
+        .highlight {
+            font-weight: 800;
+            color: var(--principal);
+        }
+
+        /* Pastille de couleur d'un parfum */
+        .dot {
+            display: inline-block;
+            width: 3mm;
+            height: 3mm;
+            border-radius: 50%;
+            margin-right: 1.2mm;
+            vertical-align: -0.3mm;
+            border: 0.3mm solid rgba(0, 0, 0, 0.25);
+        }
+
+        /* Barème des prix : le vendeur n'a pas à calculer devant le client */
+        .bareme {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8.5pt;
+        }
+
+        .bareme td {
+            white-space: nowrap;
+            padding: 0.2mm 1mm;
+            border-bottom: 1px dotted var(--bordure);
+        }
+
+        .bareme td:nth-child(even) {
+            text-align: right;
+            font-weight: 700;
+            padding-right: 3mm;
+        }
+
+        /* ── Tableau des clients ──────────────────────────────────── */
+        .clients {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .clients th {
+            background: var(--principal);
+            color: #fff;
+            font-weight: 700;
+            font-size: 8.5pt;
+            padding: 1.2mm 1mm;
+            border: 1px solid var(--principal);
+            text-align: center;
+            line-height: 1.15;
+        }
+
+        .clients th.col-client {
+            text-align: left;
+            padding-left: 2.5mm;
+        }
+
+        .clients td {
+            border: 1px solid var(--bordure);
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .clients tbody tr {
+            height: 18mm;
+        }
+
+        .col-num {
+            width: 7mm;
+        }
+
+        .col-parfum {
+            width: 16mm;
+        }
+
+        .col-pots {
+            width: 14mm;
+        }
+
+        .col-euros {
+            width: 22mm;
+        }
+
+        .col-livre {
+            width: 14mm;
+        }
+
+        .col-paye {
+            width: 25mm;
+        }
+
+        td.num {
+            font-weight: 800;
+            color: var(--principal);
+            background: var(--fond-ligne);
+        }
+
+        /* Colonnes parfum légèrement teintées pour ne pas se tromper de ligne */
+        th.parfum {
+            border-bottom: 2mm solid var(--parfum);
+        }
+
+        td.parfum {
+            background: color-mix(in srgb, var(--parfum) 12%, #fff);
+        }
+
+        td.pots,
+        td.euros {
+            background: var(--fond-ligne);
+            font-weight: 800;
+        }
+
+        td.euros {
+            text-align: right;
+            padding-right: 2mm;
+        }
+
+        /* Cellule client : nom + téléphone, puis 2 lignes d'adresse */
+        .client {
+            text-align: left;
+            padding: 0.5mm 2.5mm 1.5mm;
+        }
+
+        .client-line {
+            display: flex;
+            gap: 3mm;
+        }
+
+        .client-field {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5mm;
+            flex: 1;
+            font-size: 7.5pt;
+            font-weight: 700;
+            color: var(--texte-doux);
+        }
+
+        .client-field.tel {
+            flex: 0 0 42mm;
+        }
+
+        .client-field .line {
+            flex: 1;
+            border-bottom: 1px dotted var(--texte-doux);
+            height: 5.2mm;
+        }
+
+        .checkbox {
+            display: inline-block;
+            width: 5mm;
+            height: 5mm;
+            border: 1.5px solid var(--principal);
+            border-radius: 1mm;
+            background: #fff;
+            vertical-align: middle;
+        }
+
+        .paye-choix {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5mm;
+            padding-left: 2mm;
+            font-size: 8pt;
+        }
+
+        .paye-choix .checkbox {
+            width: 4mm;
+            height: 4mm;
+            margin-right: 1.2mm;
+        }
+
+        /* Ligne des totaux */
+        .clients tr.total-row {
+            height: 11mm;
+        }
+
+        .total-row td {
+            border-top: 2.5px solid var(--principal);
+            background: #fff !important;
+            font-weight: 900;
+        }
+
+        .total-row td.total-label {
+            text-align: right;
+            padding-right: 3mm;
+            text-transform: uppercase;
+            font-size: 9pt;
+        }
+
+        .total-label small {
+            display: block;
+            font-size: 7.5pt;
+            font-weight: 600;
+            text-transform: none;
+            color: var(--texte-doux);
+        }
+
+        /* ── Bas du verso : cagnotte + liste « à faire » ──────────── */
+        .bottom {
+            margin-top: auto;
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 3mm;
+        }
+
+        .cagnotte {
+            border-left-color: var(--principal);
+            font-size: 10pt;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2.5mm;
+        }
+
+        .blank {
+            display: inline-block;
+            min-width: 16mm;
+            border-bottom: 1px solid var(--texte-doux);
+        }
+
+        .todo li {
+            display: flex;
+            align-items: center;
+            gap: 2mm;
+        }
+
+        .todo .checkbox {
+            width: 4mm;
+            height: 4mm;
+            flex-shrink: 0;
+        }
+
+        .footer {
+            margin-top: auto;
+            border-top: 2px solid var(--or);
+            padding-top: 1mm;
+            font-size: 8pt;
+            text-align: center;
+        }
+
+        /* ──────────────────────────────────────────────────────────────
+           IMPRESSION : A4 paysage sans marges, recto/verso
+           ────────────────────────────────────────────────────────────── */
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        @media print {
+
+            *,
+            *::before,
+            *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background: #fff;
+                padding: 0;
+                display: block;
+            }
+
+            .controls {
+                display: none;
+            }
+
+            .sheet {
+                box-shadow: none;
+                break-after: page;
+            }
+
+            .sheet:last-of-type {
+                break-after: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="controls">
+        <h2>🍮 Carnet du vendeur – recto/verso A4 paysage</h2>
+        <button type="button" onclick="printMode('carnet')">🖨️ Imprimer le carnet</button>
+    </div>
+
+    <div class="controls">
+        <h2>➕ Page en plus pour les grands vendeurs (8 clients)</h2>
+        <button type="button" onclick="printMode('extra')">🖨️ Imprimer une page en plus</button>
+    </div>
+
+    <!-- ─────────── RECTO : infos + premiers clients ─────────── -->
+    <div class="sheet">
+        <div class="header">
+            <img class="logo-apel" src="logo_apel.png" alt="Logo APEL" />
+            <div class="header-text">
+                <p class="operation-label">APEL Notre Dame – Opération Caramels</p>
+                <h1 class="title"><span class="small">Mon carnet de</span> vendeur</h1>
+            </div>
+            <div class="vendeur">
+                <div class="field">Nom <span class="line"></span></div>
+                <div class="field">Prénom <span class="line"></span></div>
+                <div class="field small">Classe <span class="line"></span></div>
+            </div>
+        </div>
+
+        <div class="infos">
+            <div class="box">
+                <h3>🫙 Ce que je vends</h3>
+                <p>Pot de 220 g, <strong>6,50 €</strong> – caramels artisanaux d’Ô Délices D’Orline (Saint-Samson-sur-Rance).</p>
+                <ul id="liste-parfums"></ul>
+            </div>
+            <div class="box">
+                <h3>🗓️ Les dates à retenir</h3>
+                <ul>
+                    <li>📝 Je prends la commande et <strong>j’encaisse tout de suite</strong> : espèces, ou chèque à l’ordre de <strong>« APEL Notre Dame »</strong>.</li>
+                    <li>📩 Avant le <strong>lundi 7 décembre</strong> inclus : flyer + argent dans la boîte aux lettres de l’APEL.</li>
+                    <li>🎄 Le <strong>jeudi 17 décembre</strong>, à la fin des cours : je récupère les pots à l’école et je livre mes clients.</li>
+                    <li>💛 <span class="highlight">1 pot vendu = 1 € pour moi !</span></li>
+                </ul>
+            </div>
+            <div class="box">
+                <h3>🧮 Combien ça coûte ?</h3>
+                <table class="bareme" id="bareme"></table>
+            </div>
+            <div class="box">
+                <h3>💡 Si le client me demande…</h3>
+                <ul>
+                    <li><strong>Allergènes ?</strong> Seulement du lactose (beurre et crème fermiers).</li>
+                    <li><strong>Conservation ?</strong> À l’abri de la lumière et de la chaleur ; à consommer rapidement une fois ouvert.</li>
+                    <li><strong>Le caramel s’est séparé ?</strong> C’est naturel : il suffit de mélanger.</li>
+                    <li><strong>♻️ Les pots vides ?</strong> Je peux les rapporter (propres) à l’école, dans le carton prévu.</li>
+                </ul>
+            </div>
+        </div>
+
+        <table class="clients" data-first-row="1" data-row-count="6"></table>
+
+        <div class="footer">
+            <strong>Contact APEL :</strong> apel.notredamebroons@gmail.com
+        </div>
+    </div>
+
+    <!-- ─────────── VERSO : suite des clients + totaux ─────────── -->
+    <div class="sheet">
+        <div class="header header-small">
+            <img class="logo-apel" src="logo_apel.png" alt="Logo APEL" />
+            <div class="header-text">
+                <p class="operation-label">APEL Notre Dame – Opération Caramels</p>
+                <h1 class="title"><span class="small">Mes clients</span> (suite)</h1>
+            </div>
+        </div>
+
+        <table class="clients" data-first-row="7" data-row-count="7" data-total-label="Total du carnet"></table>
+
+        <div class="bottom">
+            <div class="box cagnotte">
+                <h3>🐷 Ma cagnotte</h3>
+                <p><span class="blank"></span> pots vendus × 1 € = <span class="blank"></span> € pour moi&nbsp;! 🎉</p>
+                <p>Argent encaissé : <span class="blank"></span> € (= total ci-dessus, à mettre dans l’enveloppe)</p>
+            </div>
+            <div class="box todo">
+                <h3>✅ Ma liste</h3>
+                <ul>
+                    <li><span class="checkbox"></span>À chaque commande : j’encaisse et je coche « Payé ».</li>
+                    <li><span class="checkbox"></span>Avant le 7 décembre : je recopie la ligne « Total » sur le flyer et je le glisse avec l’argent dans une enveloppe (nom, prénom, classe), dans la boîte aux lettres de l’APEL.</li>
+                    <li><span class="checkbox"></span>Le 17 décembre : je récupère mes pots à l’école et je vérifie qu’il ne manque rien.</li>
+                    <li><span class="checkbox"></span>Je livre chaque client, je coche « Livré »… et je propose de reprendre les pots vides ♻️</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────── PAGE EN PLUS (imprimée à part) ─────────── -->
+    <div class="sheet sheet-extra">
+        <div class="header header-small">
+            <img class="logo-apel" src="logo_apel.png" alt="Logo APEL" />
+            <div class="header-text">
+                <p class="operation-label">APEL Notre Dame – Opération Caramels</p>
+                <h1 class="title"><span class="small">Mes clients</span> (page en plus)</h1>
+            </div>
+            <div class="vendeur">
+                <div class="field">Nom <span class="line"></span></div>
+                <div class="field small">Classe <span class="line"></span></div>
+            </div>
+        </div>
+
+        <table class="clients" data-first-row="" data-row-count="8"
+            data-total-label="Total de cette page"
+            data-total-hint="à ajouter au total du carnet"></table>
+    </div>
+
+    <script>
+        const FLAVORS = [
+            { name: 'Nature', label: 'Caramel au beurre salé', detail: 'à la fleur de sel de Guérande', color: 'var(--nature)' },
+            { name: 'Vanille', label: 'Vanille', detail: 'de Madagascar', color: 'var(--vanille)' },
+            { name: 'Sarrasin', label: 'Sarrasin', detail: 'graines torréfiées', color: 'var(--sarrasin)' },
+            { name: 'Tonka', label: 'Tonka', detail: 'fève de tonka', color: 'var(--tonka)' },
+            { name: 'Chocamel', label: 'Chocamel', detail: 'caramel + chocolat noir 80 %', color: 'var(--chocamel)' },
+        ];
+        const PRICE_CENTS = 650;
+        const PRICE_SCALE_MAX = 10;
+
+        /**
+         * Format an amount in cents as French euros.
+         *
+         * FR : Formate un montant en centimes en euros « à la française ».
+         *
+         * @param {number} cents - Montant en centimes.
+         * @returns {string} Le montant, ex. « 19,50 € ».
+         */
+        function formatEuros(cents) {
+            return `${(cents / 100).toFixed(2).replace('.', ',')} €`;
+        }
+
+        /**
+         * Build a coloured dot for a flavour.
+         *
+         * FR : Construit la pastille de couleur d'un parfum.
+         *
+         * @param {string} color - Couleur CSS du parfum.
+         * @returns {string} Le HTML de la pastille.
+         */
+        function dotHtml(color) {
+            return `<span class="dot" style="background:${color}"></span>`;
+        }
+
+        /**
+         * Fill the flavour list of the info box.
+         *
+         * FR : Remplit la liste des parfums de l'encadré « Ce que je vends ».
+         */
+        function renderFlavorList() {
+            document.getElementById('liste-parfums').innerHTML = FLAVORS
+                .map((flavor) => `<li>${dotHtml(flavor.color)}<strong>${flavor.label}</strong> – ${flavor.detail}</li>`)
+                .join('');
+        }
+
+        /**
+         * Fill the price scale, two columns of pot counts.
+         *
+         * FR : Remplit le barème des prix (1 à 10 pots, sur deux colonnes).
+         */
+        function renderPriceScale() {
+            const half = PRICE_SCALE_MAX / 2;
+            const rows = [];
+            for (let potCount = 1; potCount <= half; potCount++) {
+                const rightCount = potCount + half;
+                rows.push(`<tr>
+                    <td>${potCount} pot${potCount > 1 ? 's' : ''}</td><td>${formatEuros(potCount * PRICE_CENTS)}</td>
+                    <td>${rightCount} pots</td><td>${formatEuros(rightCount * PRICE_CENTS)}</td>
+                </tr>`);
+            }
+            document.getElementById('bareme').innerHTML = rows.join('');
+        }
+
+        /**
+         * Build the header row of a client table.
+         *
+         * FR : Construit l'en-tête d'un tableau de clients.
+         *
+         * @returns {string} Le HTML du <thead>.
+         */
+        function clientHeadHtml() {
+            const flavorHeads = FLAVORS
+                .map((flavor) => `<th class="col-parfum parfum" style="--parfum:${flavor.color}">${flavor.name}</th>`)
+                .join('');
+            return `<thead><tr>
+                <th class="col-num">N°</th>
+                <th class="col-client">Client : nom, téléphone, adresse</th>
+                ${flavorHeads}
+                <th class="col-pots">Nb de pots</th>
+                <th class="col-euros">À encaisser</th>
+                <th class="col-paye">Payé</th>
+                <th class="col-livre">Livré</th>
+            </tr></thead>`;
+        }
+
+        /**
+         * Build one client row, numbered or not.
+         *
+         * FR : Construit une ligne client (numérotée ou non).
+         *
+         * @param {number|string} rowNumber - Numéro affiché, vide pour la page en plus.
+         * @returns {string} Le HTML du <tr>.
+         */
+        function clientRowHtml(rowNumber) {
+            const flavorCells = FLAVORS
+                .map((flavor) => `<td class="parfum" style="--parfum:${flavor.color}"></td>`)
+                .join('');
+            return `<tr>
+                <td class="num">${rowNumber}</td>
+                <td class="client">
+                    <div class="client-line">
+                        <div class="client-field">Nom <span class="line"></span></div>
+                        <div class="client-field tel">Tél <span class="line"></span></div>
+                    </div>
+                    <div class="client-line">
+                        <div class="client-field">Adresse <span class="line"></span></div>
+                    </div>
+                    <div class="client-line">
+                        <div class="client-field"><span class="line"></span></div>
+                    </div>
+                </td>
+                ${flavorCells}
+                <td class="pots"></td>
+                <td class="euros">€</td>
+                <td><div class="paye-choix">
+                    <span><span class="checkbox"></span>Espèces</span>
+                    <span><span class="checkbox"></span>Chèque</span>
+                </div></td>
+                <td><span class="checkbox"></span></td>
+            </tr>`;
+        }
+
+        /**
+         * Build the totals row of a client table.
+         *
+         * FR : Construit la ligne des totaux d'un tableau de clients.
+         *
+         * @param {string} label - Libellé de la ligne.
+         * @param {string} hint - Précision sous le libellé.
+         * @returns {string} Le HTML du <tr>.
+         */
+        function totalRowHtml(label, hint) {
+            const flavorCells = FLAVORS
+                .map((flavor) => `<td class="parfum" style="--parfum:${flavor.color}"></td>`)
+                .join('');
+            return `<tr class="total-row">
+                <td colspan="2" class="total-label">${label}<small>${hint}</small></td>
+                ${flavorCells}
+                <td></td>
+                <td class="euros">€</td>
+                <td colspan="2"></td>
+            </tr>`;
+        }
+
+        /**
+         * Fill every client table from its data attributes.
+         *
+         * FR : Remplit chaque tableau de clients d'après ses attributs data-*.
+         */
+        function renderClientTables() {
+            document.querySelectorAll('table.clients').forEach((table) => {
+                const firstRow = table.dataset.firstRow;
+                const rowCount = Number(table.dataset.rowCount);
+                const rows = [];
+                for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+                    rows.push(clientRowHtml(firstRow ? Number(firstRow) + rowIndex : ''));
+                }
+                if (table.dataset.totalLabel) {
+                    const hint = table.dataset.totalHint ?? '↳ à recopier sur le flyer de commande';
+                    rows.push(totalRowHtml(table.dataset.totalLabel, hint));
+                }
+                table.innerHTML = `${clientHeadHtml()}<tbody>${rows.join('')}</tbody>`;
+            });
+        }
+
+        /**
+         * Switch between the booklet and the extra page, then print.
+         *
+         * FR : Bascule entre le carnet et la page en plus, puis lance l'impression.
+         *
+         * @param {'carnet'|'extra'} mode - Ce qu'il faut imprimer.
+         */
+        function printMode(mode) {
+            document.body.classList.toggle('extra', mode === 'extra');
+            window.print();
+        }
+
+        renderFlavorList();
+        renderPriceScale();
+        renderClientTables();
+
+        // Retour à l'affichage du carnet après l'impression.
+        window.addEventListener('afterprint', () => document.body.classList.remove('extra'));
+    </script>
+
+</body>
+
+</html>

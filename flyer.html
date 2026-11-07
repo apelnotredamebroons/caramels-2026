@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APEL – Opération Caramels – Flyer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        /* ──────────────────────────────────────────────────────────────
+           PALETTE (tons caramel, reprise des étiquettes Ô Délices D’Orline)
+           ────────────────────────────────────────────────────────────── */
+        :root {
+            /* caramel brun + caramel doré + crème */
+            --principal: #8B4A1C;
+            --principal-dark: #5E2F10;
+            --or: #D9A05B;
+            --or-dark: #A8702F;
+            --texte: #3B2314;
+            --texte-doux: #76604F;
+            --fond-page: #EFE4D6;
+            --fond-flyer: #FFFAF3;
+            --fond-ligne: #F8ECDC;
+            --titre-font: 'Lobster', 'Georgia', serif;
+            --titre-weight: 400;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--fond-page);
+            font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
+            color: var(--texte);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 20px 60px;
+        }
+
+        /* ── BARRE DE CONTRÔLE (masquée à l'impression) ────────────── */
+        .controls {
+            background: #fff;
+            padding: 12px 22px;
+            border-radius: 12px;
+            border: 2px solid var(--principal);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .controls h2 {
+            font-size: 15px;
+            color: var(--principal-dark);
+        }
+
+        .controls button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: var(--or);
+            color: var(--texte);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .controls button:hover {
+            background: var(--or-dark);
+            color: #fff;
+        }
+
+        /* ──────────────────────────────────────────────────────────────
+           FEUILLE A4 PAYSAGE = 2 FLYERS A5 PORTRAIT CÔTE À CÔTE
+           ────────────────────────────────────────────────────────────── */
+        .sheet {
+            width: 297mm;
+            height: 210mm;
+            display: flex;
+            background: #fff;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .flyer {
+            width: 148.5mm;
+            height: 210mm;
+            padding: 7mm 10mm 6mm;
+            display: flex;
+            flex-direction: column;
+            gap: 2mm;
+            background: var(--fond-flyer);
+            font-size: 10pt;
+            line-height: 1.3;
+        }
+
+        /* Mode A5 : une seule feuille A5 portrait, un seul flyer */
+        body.a5 .sheet {
+            width: 148.5mm;
+        }
+
+        body.a5 .flyer+.flyer {
+            display: none;
+        }
+
+        /* Ligne de découpe entre les deux flyers */
+        .flyer+.flyer {
+            border-left: 1px dashed #999;
+        }
+
+        /* En-tête */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 4mm;
+            border-bottom: 2px solid var(--or);
+            padding-bottom: 2mm;
+        }
+
+        .header img {
+            display: block;
+            height: auto;
+        }
+
+        .logo-apel {
+            width: 24mm;
+        }
+
+        .header-text {
+            flex: 1;
+            text-align: center;
+        }
+
+        .operation-label {
+            font-size: 8pt;
+            font-weight: 700;
+            color: var(--or-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .title {
+            font-family: var(--titre-font);
+            font-weight: var(--titre-weight);
+            font-size: 28pt;
+            line-height: 1.05;
+            color: var(--principal);
+        }
+
+        .title .small {
+            font-size: 0.65em;
+            color: var(--or-dark);
+        }
+
+        .partenaire {
+            font-size: 9pt;
+            font-weight: 600;
+            margin-top: 1mm;
+        }
+
+        /* Photo des pots */
+        .photo-pots {
+            display: block;
+            width: 100%;
+            height: 25mm;
+            object-fit: cover;
+            object-position: center 70%;
+            border-radius: 2mm;
+        }
+
+        /* Texte d'introduction */
+        .intro p+p {
+            margin-top: 1.2mm;
+        }
+
+        .highlight {
+            font-weight: 800;
+            color: var(--principal);
+        }
+
+        .steps {
+            margin: 0.6mm 0 0 5mm;
+        }
+
+        /* Encadré infos pratiques */
+        .infos {
+            background: var(--fond-ligne);
+            border-left: 4px solid var(--or);
+            border-radius: 2mm;
+            padding: 2mm 3.5mm;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2mm;
+        }
+
+        .infos p {
+            display: flex;
+            gap: 2mm;
+        }
+
+        .infos .emoji {
+            flex-shrink: 0;
+        }
+
+        /* Tableau de commande */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+        }
+
+        th {
+            background: var(--principal);
+            color: #fff;
+            font-weight: 700;
+            text-align: left;
+            padding: 1.3mm 2mm;
+            border: 1px solid var(--principal);
+        }
+
+        td {
+            border: 1px solid #C9B497;
+            padding: 0.9mm 2.5mm;
+            vertical-align: middle;
+        }
+
+        tbody tr:nth-child(odd) td {
+            background: var(--fond-ligne);
+        }
+
+        .col-prix,
+        .col-qte,
+        .col-total {
+            width: 16mm;
+            text-align: center;
+        }
+
+        .col-total {
+            width: 18mm;
+        }
+
+        .produit-nom {
+            font-weight: 800;
+        }
+
+        .produit-compo {
+            display: block;
+            font-size: 8.5pt;
+            font-style: italic;
+            color: var(--texte-doux);
+            line-height: 1.2;
+        }
+
+        .prix {
+            font-weight: 800;
+            color: var(--principal);
+            white-space: nowrap;
+        }
+
+        .total-row td {
+            background: #fff !important;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-align: right;
+            border-top: 2px solid var(--principal);
+            padding: 1.8mm 2.5mm;
+        }
+
+        /* Coordonnées de la famille */
+        .fields {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5mm;
+        }
+
+        .field-row {
+            display: flex;
+            gap: 4mm;
+        }
+
+        .field {
+            display: flex;
+            align-items: flex-end;
+            gap: 2mm;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .field.small {
+            flex: 0 0 30mm;
+        }
+
+        .field .line {
+            flex: 1;
+            border-bottom: 1px solid var(--texte-doux);
+            height: 6mm;
+        }
+
+        /* Pied de page */
+        .footer {
+            margin-top: auto;
+            border-top: 2px solid var(--or);
+            padding-top: 1.5mm;
+            font-size: 8.5pt;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .allergenes {
+            font-size: 7.5pt;
+            font-style: italic;
+            color: var(--texte-doux);
+            line-height: 1.3;
+            margin-bottom: 1mm;
+        }
+
+        /* ──────────────────────────────────────────────────────────────
+           IMPRESSION : sans marges (format @page défini dans #page-style)
+           ────────────────────────────────────────────────────────────── */
+        @media print {
+
+            *,
+            *::before,
+            *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background: #fff;
+                padding: 0;
+                display: block;
+            }
+
+            .controls {
+                display: none;
+            }
+
+            .sheet {
+                box-shadow: none;
+                overflow: hidden;
+            }
+        }
+    </style>
+    <!-- Format de page, modifié par printFormat() : A4 paysage ou A5 portrait -->
+    <style id="page-style">
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="controls">
+        <h2>🍮 Flyer – Opération Caramels (2 par page A4)</h2>
+        <button type="button" onclick="printFormat('a4')">🖨️ Imprimer</button>
+    </div>
+
+    <div class="controls">
+        <h2>🍮 Flyer – Opération Caramels A5</h2>
+        <button type="button" onclick="printFormat('a5')">🖨️ Imprimer</button>
+    </div>
+
+    <div class="sheet" id="sheet"></div>
+
+    <!-- ─────────── TEMPLATE D'UN FLYER A5 ─────────── -->
+    <template id="flyer-template">
+        <div class="flyer">
+
+            <div class="header">
+                <img class="logo-apel" src="logo_apel.png" alt="Logo APEL" />
+                <div class="header-text">
+                    <p class="operation-label">APEL Notre Dame</p>
+                    <h1 class="title"><span class="small">Opération</span> Caramels</h1>
+                    <p class="partenaire">En partenariat avec Ô Délices D’Orline – fabrication artisanale</p>
+                </div>
+            </div>
+
+            <img class="photo-pots" src="pots_caramel.jpg" alt="Les cinq pots de caramel Ô Délices D’Orline" />
+
+            <div class="intro">
+                <p>Des caramels artisanaux livrés juste avant Noël : <strong>idéal comme idée cadeau de Noël</strong>
+                    🎁<br>
+                    <span class="highlight">1 pot vendu = 1 € reversé à l’élève vendeur !</span>
+                </p>
+                <p>Commandes jusqu’au <strong>lundi 7 décembre</strong> inclus. Pour en profiter :</p>
+                <ol class="steps">
+                    <li>Remplissez ce flyer ;</li>
+                    <li>Glissez-le avec votre règlement dans une enveloppe (nom, prénom, classe) ;</li>
+                    <li>Déposez l’enveloppe dans la boîte aux lettres de l’APEL.</li>
+                </ol>
+            </div>
+
+            <div class="infos">
+                <p><span class="emoji">🎄</span><span>Livraison le <strong>jeudi 17 décembre</strong> à l’école, à la fin des cours.</span>
+                </p>
+                <p><span class="emoji">📦</span><span><strong>Grosse commande ? (> 15 pots)</strong> Venez la récupérer
+                        vous-même, ou prévenez-nous pour convenir d’un autre rendez-vous.</span></p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Caramel (pot de 220 g)</th>
+                        <th class="col-prix">Prix</th>
+                        <th class="col-qte">Quantité</th>
+                        <th class="col-total">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="produit-nom">Caramel au beurre salé</span>
+                            <span class="produit-compo">La recette nature, à la fleur de sel de Guérande</span>
+                        </td>
+                        <td class="col-prix prix">6,50 €</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="produit-nom">Caramel beurre salé – vanille</span>
+                            <span class="produit-compo">À la vanille de Madagascar</span>
+                        </td>
+                        <td class="col-prix prix">6,50 €</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="produit-nom">Caramel beurre salé – sarrasin</span>
+                            <span class="produit-compo">Aux graines de sarrasin torréfiées</span>
+                        </td>
+                        <td class="col-prix prix">6,50 €</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="produit-nom">Caramel beurre salé – tonka</span>
+                            <span class="produit-compo">À la fève de tonka</span>
+                        </td>
+                        <td class="col-prix prix">6,50 €</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="produit-nom">Chocamel</span>
+                            <span class="produit-compo">Caramel au beurre salé et chocolat noir 80 %</span>
+                        </td>
+                        <td class="col-prix prix">6,50 €</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3">Total à régler</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="fields">
+                <div class="field-row">
+                    <div class="field">Nom <span class="line"></span></div>
+                    <div class="field">Prénom <span class="line"></span></div>
+                    <div class="field small">Classe <span class="line"></span></div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p class="allergenes">Seul allergène : lactose (beurre salé et crème fraîche fermiers).</p>
+                <p><strong>Contact APEL :</strong> apel.notredamebroons@gmail.com</p>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        // Duplique le flyer pour en avoir 2 sur la feuille A4.
+        const sheet = document.getElementById('sheet');
+        const template = document.getElementById('flyer-template');
+        for (let i = 0; i < 2; i++) {
+            sheet.appendChild(template.content.cloneNode(true));
+        }
+
+        // Bascule le format de page puis lance l'impression.
+        const pageStyle = document.getElementById('page-style');
+        const PAGE_SIZES = { a4: 'A4 landscape', a5: 'A5 portrait' };
+
+        function setFormat(format) {
+            document.body.classList.toggle('a5', format === 'a5');
+            pageStyle.textContent = `@page { size: ${PAGE_SIZES[format]}; margin: 0; }`;
+        }
+
+        function printFormat(format) {
+            setFormat(format);
+            window.print();
+        }
+
+        // Retour à l'affichage A4 après l'impression.
+        window.addEventListener('afterprint', () => setFormat('a4'));
+    </script>
+
+</body>
+
+</html>
