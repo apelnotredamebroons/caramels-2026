@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#8B4A1C" />
+    <title>APEL – Opération Caramels – Mon carnet de ventes</title>
+    <style>
+        /* Police servie depuis le dépôt (et non par Google) : aucune connexion
+           à un tiers à l'ouverture de la page. Licence : fonts/OFL.txt */
+        @font-face {
+            font-family: 'Lobster';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('fonts/lobster-latin.woff2') format('woff2');
+        }
+
+        /* ──────────────────────────────────────────────────────────────
+           PALETTE (identique au flyer et à la fiche vendeur)
+           ────────────────────────────────────────────────────────────── */
+        :root {
+            --principal: #8B4A1C;
+            --principal-dark: #5E2F10;
+            --or: #D9A05B;
+            --or-dark: #A8702F;
+            --texte: #3B2314;
+            --texte-doux: #76604F;
+            --fond-page: #EFE4D6;
+            --fond-carte: #FFFAF3;
+            --fond-ligne: #F8ECDC;
+            --bordure: #C9B497;
+            --vert: #3F7D3A;
+            --fond-vert: #E3F0DF;
+            --rouge: #A33A2A;
+            --fond-rouge: #F8E1DC;
+            --titre-font: 'Lobster', 'Georgia', serif;
+
+            --nature: #E0A23B;
+            --vanille: #E9CC55;
+            --sarrasin: #8FAE5D;
+            --tonka: #9D7FC0;
+            --chocamel: #5B3A24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--fond-page);
+            font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
+            color: var(--texte);
+            font-size: 16px;
+            line-height: 1.35;
+        }
+
+        main {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 14px 14px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer;
+        }
+
+        input,
+        textarea {
+            font: inherit;
+            color: inherit;
+        }
+
+        /* ── En-tête ──────────────────────────────────────────────── */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header img {
+            width: 56px;
+            height: auto;
+        }
+
+        .operation-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--or-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .title {
+            font-family: var(--titre-font);
+            font-weight: 400;
+            font-size: 28px;
+            line-height: 1.05;
+            color: var(--principal);
+        }
+
+        .title .small {
+            font-size: 0.65em;
+            color: var(--or-dark);
+        }
+
+        .seller {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        .seller input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1.5px solid var(--bordure);
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        /* ── Bandeau des dates ────────────────────────────────────── */
+        .countdown {
+            background: var(--principal);
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 14px;
+        }
+
+        .countdown strong {
+            color: #FFE2B8;
+        }
+
+        /* ── Compteurs ────────────────────────────────────────────── */
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat {
+            background: var(--fond-carte);
+            border-radius: 12px;
+            border-left: 5px solid var(--or);
+            padding: 10px 12px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--texte-doux);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--principal);
+        }
+
+        .stat-detail {
+            font-size: 12px;
+            color: var(--texte-doux);
+        }
+
+        .stat.cagnotte {
+            border-left-color: var(--vert);
+        }
+
+        .stat.cagnotte .stat-value {
+            color: var(--vert);
+        }
+
+        /* ── Boutons ──────────────────────────────────────────────── */
+        .button-primary,
+        .button-secondary,
+        .button-danger {
+            border: none;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-weight: 700;
+        }
+
+        .button-primary {
+            background: var(--principal);
+            color: #fff;
+        }
+
+        .button-secondary {
+            background: var(--or);
+            color: var(--texte);
+        }
+
+        .button-danger {
+            background: var(--fond-rouge);
+            color: var(--rouge);
+        }
+
+        .button-big {
+            width: 100%;
+            font-size: 18px;
+            padding: 14px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* ── Filtres ──────────────────────────────────────────────── */
+        .filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .filter {
+            border: 1.5px solid var(--principal);
+            background: #fff;
+            color: var(--principal);
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .filter.is-active {
+            background: var(--principal);
+            color: #fff;
+        }
+
+        /* ── Cartes client ────────────────────────────────────────── */
+        .clients {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .client-card {
+            background: var(--fond-carte);
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .client-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .client-name {
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .client-amount {
+            font-weight: 800;
+            color: var(--principal);
+            white-space: nowrap;
+        }
+
+        .client-contact {
+            font-size: 13px;
+            color: var(--texte-doux);
+        }
+
+        .client-contact a {
+            color: var(--principal);
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #fff;
+            border: 1px solid var(--bordure);
+            border-radius: 999px;
+            padding: 2px 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.25);
+            flex-shrink: 0;
+        }
+
+        .client-status {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .status {
+            border: 1.5px solid var(--rouge);
+            background: var(--fond-rouge);
+            color: var(--rouge);
+            border-radius: 8px;
+            padding: 8px 6px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .status.is-done {
+            border-color: var(--vert);
+            background: var(--fond-vert);
+            color: var(--vert);
+        }
+
+        .button-edit {
+            border: 1.5px solid var(--bordure);
+            background: #fff;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+        .empty {
+            text-align: center;
+            color: var(--texte-doux);
+            padding: 24px 10px;
+            background: var(--fond-carte);
+            border-radius: 12px;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: var(--texte-doux);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* ── Fenêtres (formulaire client, récap) ──────────────────── */
+        dialog {
+            width: min(520px, calc(100% - 20px));
+            max-height: calc(100% - 20px);
+            margin: auto;
+            border: none;
+            border-radius: 16px;
+            background: var(--fond-carte);
+            color: var(--texte);
+            padding: 16px;
+        }
+
+        dialog::backdrop {
+            background: rgba(59, 35, 20, 0.55);
+        }
+
+        dialog h2 {
+            font-family: var(--titre-font);
+            font-weight: 400;
+            color: var(--principal);
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .form input[type="text"],
+        .form input[type="tel"],
+        .form textarea {
+            padding: 9px 10px;
+            border: 1.5px solid var(--bordure);
+            border-radius: 8px;
+            background: #fff;
+            font-weight: 400;
+        }
+
+        .form h3 {
+            font-size: 15px;
+            color: var(--principal-dark);
+            margin-top: 4px;
+        }
+
+        .flavor-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px dotted var(--bordure);
+        }
+
+        .flavor-name {
+            flex: 1;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .flavor-name small {
+            display: block;
+            font-weight: 400;
+            font-size: 12px;
+            color: var(--texte-doux);
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stepper button {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            background: var(--or);
+            color: var(--texte);
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .stepper output {
+            min-width: 26px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .form-total {
+            text-align: right;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--principal);
+        }
+
+        .form .toggle-row {
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .toggle-row input {
+            width: 22px;
+            height: 22px;
+            accent-color: var(--vert);
+        }
+
+        .payment-modes {
+            display: flex;
+            gap: 16px;
+            padding-left: 32px;
+            font-size: 15px;
+        }
+
+        .payment-modes label {
+            flex-direction: row;
+            align-items: center;
+            font-weight: 400;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--texte-doux);
+            padding-left: 32px;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 6px;
+        }
+
+        .dialog-buttons .button-danger {
+            margin-right: auto;
+        }
+
+        /* Tableau du récap */
+        .recap-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .recap-table td {
+            padding: 7px 4px;
+            border-bottom: 1px dotted var(--bordure);
+        }
+
+        .recap-table td:last-child {
+            text-align: right;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .recap-table tr.recap-total td {
+            border-top: 2px solid var(--principal);
+            border-bottom: none;
+            font-weight: 800;
+        }
+
+        .recap-note {
+            background: var(--fond-ligne);
+            border-left: 4px solid var(--or);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .recap-note.is-warning,
+        .install-hint {
+            background: var(--fond-rouge);
+            border-left-color: var(--rouge);
+        }
+
+        /* Conseil iPhone : seule une page ajoutée à l'écran d'accueil
+           échappe à l'effacement automatique de Safari après 7 jours. */
+        .install-hint {
+            border-left: 5px solid var(--rouge);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 14px;
+        }
+
+        .backup-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* ──────────────────────────────────────────────────────────────
+           IMPRESSION / PDF : seule la feuille récapitulative s'imprime
+           ────────────────────────────────────────────────────────────── */
+        .print-sheet {
+            display: none;
+        }
+
+        @page {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+
+        @media print {
+
+            *,
+            *::before,
+            *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background: #fff;
+                font-size: 10pt;
+            }
+
+            main,
+            dialog {
+                display: none !important;
+            }
+
+            .print-sheet {
+                display: block;
+            }
+
+            .print-header {
+                display: flex;
+                align-items: center;
+                gap: 5mm;
+                border-bottom: 2px solid var(--or);
+                padding-bottom: 2mm;
+                margin-bottom: 4mm;
+            }
+
+            .print-header img {
+                width: 18mm;
+            }
+
+            .print-header .title {
+                font-size: 20pt;
+            }
+
+            .print-seller {
+                margin-left: auto;
+                text-align: right;
+                font-weight: 700;
+            }
+
+            .print-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .print-table th {
+                background: var(--principal);
+                color: #fff;
+                padding: 1.5mm 2mm;
+                border: 1px solid var(--principal);
+                font-size: 9pt;
+            }
+
+            .print-table th.parfum {
+                border-bottom: 1.5mm solid var(--parfum);
+            }
+
+            .print-table td {
+                border: 1px solid var(--bordure);
+                padding: 1.5mm 2mm;
+                text-align: center;
+                vertical-align: top;
+            }
+
+            .print-table td.print-client {
+                text-align: left;
+            }
+
+            .print-table tr {
+                break-inside: avoid;
+            }
+
+            .print-table .print-total td {
+                border-top: 2px solid var(--principal);
+                font-weight: 800;
+            }
+
+            .print-contact {
+                font-size: 8.5pt;
+                color: var(--texte-doux);
+            }
+
+            .print-summary {
+                display: flex;
+                gap: 8mm;
+                margin-top: 4mm;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="header">
+            <img src="logo_apel.png" alt="Logo APEL" />
+            <div>
+                <p class="operation-label">APEL Notre Dame – Opération Caramels</p>
+                <h1 class="title"><span class="small">Mon carnet de</span> ventes</h1>
+            </div>
+        </div>
+
+        <label class="seller">Vendeur :
+            <input type="text" id="seller" placeholder="Prénom Nom – classe" autocomplete="off" />
+        </label>
+
+        <div class="countdown" id="countdown"></div>
+
+        <p class="install-hint" id="install-hint" hidden>
+            📌 <strong>Sur iPhone, ajoute cette page à l’écran d’accueil</strong> (bouton Partager ⬆️ puis
+            « Sur l’écran d’accueil ») et ouvre-la depuis là. Sinon, l’iPhone peut effacer ton carnet
+            si tu ne l’ouvres pas pendant 7 jours.
+        </p>
+
+        <div class="stats" id="stats"></div>
+
+        <button type="button" class="button-primary button-big" data-action="new-client">➕ Nouveau client</button>
+
+        <div class="filters" id="filters">
+            <button type="button" class="filter is-active" data-filter="all">Tous</button>
+            <button type="button" class="filter" data-filter="unpaid">💶 À encaisser</button>
+            <button type="button" class="filter" data-filter="undelivered">🎁 À livrer</button>
+        </div>
+
+        <div class="clients" id="clients"></div>
+
+        <div class="actions">
+            <button type="button" class="button-secondary" data-action="recap">📋 Récap pour le flyer</button>
+            <button type="button" class="button-secondary" data-action="share">📤 Partager ma liste</button>
+            <button type="button" class="button-secondary" data-action="backup">💾 Importer / exporter</button>
+            <button type="button" class="button-secondary" data-action="print">🖨️ Imprimer / PDF</button>
+        </div>
+
+        <p class="footer">
+            🔒 Tes clients sont enregistrés <strong>uniquement sur ce téléphone</strong> : rien n’est envoyé sur
+            Internet.<br>
+            Pense à exporter ton carnet de temps en temps pour en garder une copie.<br>
+            Contact APEL : apel.notredamebroons@gmail.com
+        </p>
+    </main>
+
+    <!-- ─────────── FORMULAIRE CLIENT ─────────── -->
+    <dialog id="client-dialog">
+        <form class="form" id="client-form" method="dialog">
+            <h2 id="client-dialog-title">Nouveau client</h2>
+            <label>Nom
+                <input type="text" name="name" required autocomplete="off" />
+            </label>
+            <label>Téléphone
+                <input type="tel" name="phone" autocomplete="off" />
+            </label>
+            <label>Adresse
+                <textarea name="address" rows="2"></textarea>
+            </label>
+
+            <h3>🫙 Sa commande</h3>
+            <div id="flavor-steppers"></div>
+            <p class="form-total" id="form-total"></p>
+
+            <h3>💶 Paiement</h3>
+            <label class="toggle-row"><input type="checkbox" name="isPaid" /> J’ai encaissé</label>
+            <div class="payment-modes">
+                <label><input type="radio" name="paymentMode" value="especes" /> Espèces</label>
+                <label><input type="radio" name="paymentMode" value="cheque" /> Chèque</label>
+            </div>
+            <p class="hint">Chèque à l’ordre de « APEL Notre Dame ».</p>
+
+            <h3>🎁 Livraison</h3>
+            <label class="toggle-row"><input type="checkbox" name="isDelivered" /> J’ai livré</label>
+
+            <div class="dialog-buttons">
+                <button type="button" class="button-danger" data-action="delete-client" id="delete-button">🗑️</button>
+                <button type="button" class="button-secondary" data-action="close-dialog">Annuler</button>
+                <button type="submit" class="button-primary">Enregistrer</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- ─────────── RÉCAP POUR LE FLYER ─────────── -->
+    <dialog id="recap-dialog">
+        <h2>Récap pour le flyer</h2>
+        <div id="recap-content"></div>
+        <div class="dialog-buttons">
+            <button type="button" class="button-primary" data-action="close-dialog">Fermer</button>
+        </div>
+    </dialog>
+
+    <!-- ─────────── IMPORT / EXPORT CSV ─────────── -->
+    <dialog id="backup-dialog">
+        <h2>Importer / exporter</h2>
+        <p class="recap-note">Le fichier CSV s’ouvre dans Excel ou LibreOffice. Garde-le bien : il permet de
+            retrouver ton carnet, même sur un autre téléphone.</p>
+        <div class="backup-buttons">
+            <button type="button" class="button-primary" data-action="export-csv">⬇️ Exporter mon carnet (CSV)</button>
+            <button type="button" class="button-secondary" data-action="import-csv">⬆️ Importer un fichier CSV</button>
+            <input type="file" id="import-file" accept=".csv,text/csv" hidden />
+        </div>
+        <p class="recap-note is-warning">⚠️ Importer un fichier <strong>remplace</strong> le carnet actuel.</p>
+        <div class="dialog-buttons">
+            <button type="button" class="button-secondary" data-action="close-dialog">Fermer</button>
+        </div>
+    </dialog>
+
+    <!-- ─────────── FEUILLE IMPRIMÉE (remplie au moment d'imprimer) ─────────── -->
+    <div class="print-sheet" id="print-sheet"></div>
+
+    <script>
+        const STORAGE_KEY = 'apel-caramels-2026';
+        const PRICE_CENTS = 650;
+        const SELLER_GAIN_CENTS = 100;
+        const ORDER_DEADLINE = new Date(2026, 11, 7);
+        const DELIVERY_DATE = new Date(2026, 11, 17);
+        const MS_PER_DAY = 24 * 60 * 60 * 1000;
+        const FLAVORS = [
+            { key: 'nature', name: 'Nature', detail: 'Beurre salé, fleur de sel de Guérande', color: 'var(--nature)' },
+            { key: 'vanille', name: 'Vanille', detail: 'Vanille de Madagascar', color: 'var(--vanille)' },
+            { key: 'sarrasin', name: 'Sarrasin', detail: 'Graines de sarrasin torréfiées', color: 'var(--sarrasin)' },
+            { key: 'tonka', name: 'Tonka', detail: 'Fève de tonka', color: 'var(--tonka)' },
+            { key: 'chocamel', name: 'Chocamel', detail: 'Caramel + chocolat noir 80 %', color: 'var(--chocamel)' },
+        ];
+        const PAYMENT_LABELS = { especes: 'espèces', cheque: 'chèque' };
+        // « ; » et BOM UTF-8 : c'est ce qu'attend Excel en français pour ouvrir
+        // le fichier d'un double-clic avec les colonnes et les accents corrects.
+        const CSV_SEPARATOR = ';';
+        const CSV_BOM = '\uFEFF';
+        const CSV_HEADERS = ['Vendeur', 'Nom', 'Téléphone', 'Adresse', ...FLAVORS.map((flavor) => flavor.name),
+            'Pots', 'Montant (€)', 'Payé', 'Mode de paiement', 'Livré'];
+
+        const clientDialog = document.getElementById('client-dialog');
+        const clientForm = document.getElementById('client-form');
+        const recapDialog = document.getElementById('recap-dialog');
+        const backupDialog = document.getElementById('backup-dialog');
+        const importFileInput = document.getElementById('import-file');
+
+        let carnet = loadCarnet();
+        let activeFilter = 'all';
+        let editedClientId = null;
+        let draftQuantities = {};
+
+        /* ── Données ─────────────────────────────────────────────── */
+
+        /**
+         * Read the booklet saved on this device.
+         *
+         * FR : Lit le carnet enregistré sur cet appareil.
+         *
+         * @returns {{seller: string, clients: Array<object>}} Le carnet (vide si rien n'est enregistré).
+         */
+        function loadCarnet() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) {
+                return { seller: '', clients: [] };
+            }
+            try {
+                return JSON.parse(saved);
+            } catch (error) {
+                console.error('Carnet illisible, on repart de zéro', error);
+                return { seller: '', clients: [] };
+            }
+        }
+
+        /**
+         * Save the booklet on this device.
+         *
+         * FR : Enregistre le carnet sur cet appareil.
+         */
+        function saveCarnet() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(carnet));
+        }
+
+        /**
+         * Count the pots of one order.
+         *
+         * FR : Compte les pots d'une commande.
+         *
+         * @param {Object<string, number>} quantities - Quantité par parfum.
+         * @returns {number} Le nombre de pots.
+         */
+        function countPots(quantities) {
+            return FLAVORS.reduce((sum, flavor) => sum + (quantities[flavor.key] || 0), 0);
+        }
+
+        /**
+         * Format an amount in cents as French euros.
+         *
+         * FR : Formate un montant en centimes en euros « à la française ».
+         *
+         * @param {number} cents - Montant en centimes.
+         * @returns {string} Le montant, ex. « 19,50 € ».
+         */
+        function formatEuros(cents) {
+            return `${(cents / 100).toFixed(2).replace('.', ',')} €`;
+        }
+
+        /**
+         * Escape text typed by the user before putting it in HTML.
+         *
+         * FR : Neutralise le texte saisi avant de l'insérer dans le HTML.
+         *
+         * @param {string} text - Texte saisi.
+         * @returns {string} Le texte sans balise interprétable.
+         */
+        function escapeHtml(text) {
+            const holder = document.createElement('div');
+            holder.textContent = text;
+            return holder.innerHTML;
+        }
+
+        /**
+         * Compute every total of the booklet.
+         *
+         * FR : Calcule tous les totaux du carnet.
+         *
+         * @returns {object} Pots par parfum, pots, montants, nombre de clients à encaisser / à livrer.
+         */
+        function computeTotals() {
+            const totals = {
+                byFlavor: Object.fromEntries(FLAVORS.map((flavor) => [flavor.key, 0])),
+                pots: 0, dueCents: 0, paidCents: 0, cashCents: 0, chequeCount: 0, chequeCents: 0,
+                unknownModeCents: 0, unpaidCount: 0, undeliveredCount: 0,
+            };
+            carnet.clients.forEach((client) => {
+                const pots = countPots(client.quantities);
+                const amountCents = pots * PRICE_CENTS;
+                FLAVORS.forEach((flavor) => { totals.byFlavor[flavor.key] += client.quantities[flavor.key] || 0; });
+                totals.pots += pots;
+                totals.dueCents += amountCents;
+                if (client.isPaid) {
+                    totals.paidCents += amountCents;
+                    if (client.paymentMode === 'cheque') {
+                        totals.chequeCount += 1;
+                        totals.chequeCents += amountCents;
+                    } else if (client.paymentMode === 'especes') {
+                        totals.cashCents += amountCents;
+                    } else {
+                        // « Payé » touché sur la carte, sans passer par le formulaire.
+                        totals.unknownModeCents += amountCents;
+                    }
+                } else {
+                    totals.unpaidCount += 1;
+                }
+                if (!client.isDelivered) {
+                    totals.undeliveredCount += 1;
+                }
+            });
+            return totals;
+        }
+
+        /* ── Affichage ───────────────────────────────────────────── */
+
+        /**
+         * Show how many days are left before the deadline or the delivery.
+         *
+         * FR : Affiche le nombre de jours avant la date limite ou la livraison.
+         */
+        function renderCountdown() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const daysToDeadline = Math.round((ORDER_DEADLINE - today) / MS_PER_DAY);
+            const daysToDelivery = Math.round((DELIVERY_DATE - today) / MS_PER_DAY);
+            let message = '🎄 Livraison le <strong>jeudi 17 décembre</strong> : c’est fini, merci pour ta vente !';
+            if (daysToDeadline > 0) {
+                message = `📝 Encore <strong>${daysToDeadline} jour${daysToDeadline > 1 ? 's' : ''}</strong> pour prendre des commandes (jusqu’au lundi 7 décembre).`;
+            } else if (daysToDeadline === 0) {
+                message = '📩 <strong>Dernier jour !</strong> Flyer + argent dans la boîte aux lettres de l’APEL aujourd’hui.';
+            } else if (daysToDelivery >= 0) {
+                message = `🎄 Commandes closes. Livraison des pots le <strong>jeudi 17 décembre</strong> à la fin des cours.`;
+            }
+            document.getElementById('countdown').innerHTML = message;
+        }
+
+        /**
+         * Show the counters at the top of the page.
+         *
+         * FR : Affiche les compteurs du haut de page.
+         *
+         * @param {object} totals - Résultat de computeTotals().
+         */
+        function renderStats(totals) {
+            document.getElementById('stats').innerHTML = `
+                <div class="stat">
+                    <div class="stat-label">🫙 Pots vendus</div>
+                    <div class="stat-value">${totals.pots}</div>
+                    <div class="stat-detail">${carnet.clients.length} client${carnet.clients.length > 1 ? 's' : ''}</div>
+                </div>
+                <div class="stat cagnotte">
+                    <div class="stat-label">💰 Ma cagnotte</div>
+                    <div class="stat-value">${formatEuros(totals.pots * SELLER_GAIN_CENTS)}</div>
+                    <div class="stat-detail">1 € par pot vendu</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">💶 Encaissé</div>
+                    <div class="stat-value">${formatEuros(totals.paidCents)}</div>
+                    <div class="stat-detail">sur ${formatEuros(totals.dueCents)}</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">🎁 À livrer</div>
+                    <div class="stat-value">${totals.undeliveredCount}</div>
+                    <div class="stat-detail">client${totals.undeliveredCount > 1 ? 's' : ''}</div>
+                </div>`;
+        }
+
+        /**
+         * Build the card of one client.
+         *
+         * FR : Construit la carte d'un client.
+         *
+         * @param {object} client - Le client.
+         * @returns {string} Le HTML de la carte.
+         */
+        function clientCardHtml(client) {
+            const pots = countPots(client.quantities);
+            const chips = FLAVORS
+                .filter((flavor) => client.quantities[flavor.key] > 0)
+                .map((flavor) => `<span class="chip"><span class="dot" style="background:${flavor.color}"></span>${client.quantities[flavor.key]} ${flavor.name}</span>`)
+                .join('');
+            const phone = client.phone
+                ? `📞 <a href="tel:${escapeHtml(client.phone.replace(/\s/g, ''))}">${escapeHtml(client.phone)}</a>`
+                : '';
+            const address = client.address ? `📍 ${escapeHtml(client.address)}` : '';
+            const paidLabel = client.isPaid
+                ? `✅ Payé${client.paymentMode ? ` (${PAYMENT_LABELS[client.paymentMode]})` : ''}`
+                : '💶 À encaisser';
+            return `<article class="client-card">
+                <div class="client-top">
+                    <span class="client-name">${escapeHtml(client.name)}</span>
+                    <span class="client-amount">${pots} pot${pots > 1 ? 's' : ''} · ${formatEuros(pots * PRICE_CENTS)}</span>
+                </div>
+                ${phone || address ? `<div class="client-contact">${[phone, address].filter(Boolean).join('<br>')}</div>` : ''}
+                <div class="chips">${chips}</div>
+                <div class="client-status">
+                    <button type="button" class="status ${client.isPaid ? 'is-done' : ''}" data-action="toggle-paid" data-id="${client.id}">${paidLabel}</button>
+                    <button type="button" class="status ${client.isDelivered ? 'is-done' : ''}" data-action="toggle-delivered" data-id="${client.id}">${client.isDelivered ? '✅ Livré' : '🎁 À livrer'}</button>
+                    <button type="button" class="button-edit" data-action="edit-client" data-id="${client.id}" aria-label="Modifier">✏️</button>
+                </div>
+            </article>`;
+        }
+
+        /**
+         * Show the client list, according to the active filter.
+         *
+         * FR : Affiche la liste des clients selon le filtre actif.
+         */
+        function renderClients() {
+            const filters = {
+                all: () => true,
+                unpaid: (client) => !client.isPaid,
+                undelivered: (client) => !client.isDelivered,
+            };
+            const visibleClients = carnet.clients.filter(filters[activeFilter]);
+            const container = document.getElementById('clients');
+            if (carnet.clients.length === 0) {
+                container.innerHTML = '<p class="empty">Pas encore de client.<br>Appuie sur « ➕ Nouveau client » pour noter ta première commande ! 🍮</p>';
+                return;
+            }
+            if (visibleClients.length === 0) {
+                container.innerHTML = '<p class="empty">Rien à faire ici 🎉</p>';
+                return;
+            }
+            container.innerHTML = visibleClients.map(clientCardHtml).join('');
+        }
+
+        /**
+         * Refresh the whole page from the booklet.
+         *
+         * FR : Rafraîchit toute la page à partir du carnet.
+         */
+        function render() {
+            renderCountdown();
+            renderStats(computeTotals());
+            renderClients();
+        }
+
+        /* ── Formulaire client ───────────────────────────────────── */
+
+        /**
+         * Show the flavour steppers and the order total of the form.
+         *
+         * FR : Affiche les compteurs +/− par parfum et le total du formulaire.
+         */
+        function renderSteppers() {
+            document.getElementById('flavor-steppers').innerHTML = FLAVORS.map((flavor) => `
+                <div class="flavor-row">
+                    <span class="dot" style="background:${flavor.color}"></span>
+                    <span class="flavor-name">${flavor.name}<small>${flavor.detail}</small></span>
+                    <div class="stepper">
+                        <button type="button" data-action="decrement" data-flavor="${flavor.key}" aria-label="Un pot ${flavor.name} de moins">−</button>
+                        <output>${draftQuantities[flavor.key] || 0}</output>
+                        <button type="button" data-action="increment" data-flavor="${flavor.key}" aria-label="Un pot ${flavor.name} de plus">+</button>
+                    </div>
+                </div>`).join('');
+            const pots = countPots(draftQuantities);
+            document.getElementById('form-total').textContent =
+                `${pots} pot${pots > 1 ? 's' : ''} = ${formatEuros(pots * PRICE_CENTS)}`;
+        }
+
+        /**
+         * Open the client form, empty or filled with an existing client.
+         *
+         * FR : Ouvre le formulaire client, vide ou pré-rempli avec un client existant.
+         *
+         * @param {string|null} clientId - Identifiant du client à modifier, null pour un nouveau.
+         */
+        function openClientForm(clientId) {
+            const client = carnet.clients.find((candidate) => candidate.id === clientId);
+            editedClientId = client ? client.id : null;
+            clientForm.reset();
+            draftQuantities = client ? { ...client.quantities } : {};
+            document.getElementById('client-dialog-title').textContent = client ? 'Modifier le client' : 'Nouveau client';
+            document.getElementById('delete-button').hidden = !client;
+            if (client) {
+                clientForm.elements.name.value = client.name;
+                clientForm.elements.phone.value = client.phone;
+                clientForm.elements.address.value = client.address;
+                clientForm.elements.isPaid.checked = client.isPaid;
+                clientForm.elements.isDelivered.checked = client.isDelivered;
+                clientForm.elements.paymentMode.value = client.paymentMode || '';
+            }
+            renderSteppers();
+            clientDialog.showModal();
+        }
+
+        /**
+         * Save the form into the booklet.
+         *
+         * FR : Enregistre le formulaire dans le carnet.
+         *
+         * @param {SubmitEvent} event - Envoi du formulaire.
+         */
+        function submitClientForm(event) {
+            event.preventDefault();
+            if (countPots(draftQuantities) === 0) {
+                alert('Ajoute au moins un pot avec les boutons « + ».');
+                return;
+            }
+            const formFields = clientForm.elements;
+            const client = {
+                id: editedClientId ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                name: formFields.name.value.trim(),
+                phone: formFields.phone.value.trim(),
+                address: formFields.address.value.trim(),
+                quantities: { ...draftQuantities },
+                isPaid: formFields.isPaid.checked,
+                paymentMode: formFields.paymentMode.value,
+                isDelivered: formFields.isDelivered.checked,
+            };
+            const index = carnet.clients.findIndex((candidate) => candidate.id === client.id);
+            if (index === -1) {
+                carnet.clients.push(client);
+            } else {
+                carnet.clients[index] = client;
+            }
+            saveCarnet();
+            clientDialog.close();
+            render();
+        }
+
+        /**
+         * Delete the client being edited, after confirmation.
+         *
+         * FR : Supprime le client en cours de modification, après confirmation.
+         */
+        function deleteEditedClient() {
+            const client = carnet.clients.find((candidate) => candidate.id === editedClientId);
+            if (!client || !confirm(`Supprimer ${client.name} de ton carnet ?`)) {
+                return;
+            }
+            carnet.clients = carnet.clients.filter((candidate) => candidate.id !== editedClientId);
+            saveCarnet();
+            clientDialog.close();
+            render();
+        }
+
+        /**
+         * Switch a yes/no field of a client straight from its card.
+         *
+         * FR : Bascule un champ oui/non d'un client directement depuis sa carte.
+         *
+         * @param {string} clientId - Identifiant du client.
+         * @param {'isPaid'|'isDelivered'} field - Champ à basculer.
+         */
+        function toggleClientField(clientId, field) {
+            const client = carnet.clients.find((candidate) => candidate.id === clientId);
+            if (!client) {
+                return;
+            }
+            client[field] = !client[field];
+            saveCarnet();
+            render();
+        }
+
+        /* ── Récap et partage ────────────────────────────────────── */
+
+        /**
+         * Open the summary to copy onto the order flyer.
+         *
+         * FR : Ouvre le récap à recopier sur le flyer de commande.
+         */
+        function openRecap() {
+            const totals = computeTotals();
+            const flavorRows = FLAVORS.map((flavor) => `
+                <tr><td><span class="dot" style="background:${flavor.color}"></span> ${flavor.name}</td><td>${totals.byFlavor[flavor.key]}</td></tr>`).join('');
+            const warning = totals.unpaidCount > 0
+                ? `<p class="recap-note is-warning">⚠️ ${totals.unpaidCount} client${totals.unpaidCount > 1 ? 's n’ont' : ' n’a'} pas encore payé : pense à encaisser avant de rendre l’enveloppe.</p>`
+                : '';
+            const cheques = totals.chequeCount > 0
+                ? `<br>📝 ${totals.chequeCount} chèque${totals.chequeCount > 1 ? 's' : ''} : ${formatEuros(totals.chequeCents)}`
+                : '';
+            const unknownMode = totals.unknownModeCents > 0
+                ? `<br>❔ Mode non précisé : ${formatEuros(totals.unknownModeCents)} <em>(✏️ sur le client pour choisir espèces ou chèque)</em>`
+                : '';
+            document.getElementById('recap-content').innerHTML = `
+                <table class="recap-table">
+                    ${flavorRows}
+                    <tr class="recap-total"><td>Total</td><td>${totals.pots} pots · ${formatEuros(totals.dueCents)}</td></tr>
+                </table>
+                ${warning}
+                <p class="recap-note">💶 Dans l’enveloppe : ${formatEuros(totals.paidCents)}<br>
+                    🪙 Espèces : ${formatEuros(totals.cashCents)}${cheques}${unknownMode}</p>
+                <p class="recap-note">📩 Avant le <strong>lundi 7 décembre</strong> : flyer + argent dans une enveloppe (nom, prénom, classe), dans la boîte aux lettres de l’APEL.</p>`;
+            recapDialog.showModal();
+        }
+
+        /**
+         * Build the plain-text list used as a backup.
+         *
+         * FR : Construit la liste en texte brut, qui sert de sauvegarde.
+         *
+         * @returns {string} La liste complète.
+         */
+        function buildShareText() {
+            const totals = computeTotals();
+            const lines = carnet.clients.map((client, position) => {
+                const pots = countPots(client.quantities);
+                const order = FLAVORS
+                    .filter((flavor) => client.quantities[flavor.key] > 0)
+                    .map((flavor) => `${client.quantities[flavor.key]} ${flavor.name}`)
+                    .join(', ');
+                const contact = [client.phone, client.address].filter(Boolean).join(' – ');
+                const status = [
+                    client.isPaid ? `payé${client.paymentMode ? ` (${PAYMENT_LABELS[client.paymentMode]})` : ''}` : 'À ENCAISSER',
+                    client.isDelivered ? 'livré' : 'à livrer',
+                ].join(', ');
+                return `${position + 1}. ${client.name}${contact ? ` (${contact})` : ''}\n   ${order} = ${formatEuros(pots * PRICE_CENTS)} – ${status}`;
+            });
+            const flavorTotals = FLAVORS.map((flavor) => `${flavor.name} : ${totals.byFlavor[flavor.key]}`).join(' · ');
+            return [
+                `🍮 Opération Caramels – carnet de ${carnet.seller || 'vendeur'}`,
+                '',
+                ...lines,
+                '',
+                `Total : ${totals.pots} pots = ${formatEuros(totals.dueCents)} (encaissé : ${formatEuros(totals.paidCents)})`,
+                flavorTotals,
+            ].join('\n');
+        }
+
+        /**
+         * Share the list (SMS, mail, WhatsApp…) or copy it when sharing is unavailable.
+         *
+         * FR : Partage la liste (SMS, mail, WhatsApp…) ou la copie si le partage n'existe pas.
+         */
+        async function shareList() {
+            if (carnet.clients.length === 0) {
+                alert('Ton carnet est vide pour l’instant.');
+                return;
+            }
+            const text = buildShareText();
+            if (navigator.share) {
+                try {
+                    await navigator.share({ title: 'Mon carnet de ventes – Caramels', text });
+                } catch (error) {
+                    // L'utilisateur a fermé la fenêtre de partage : rien à signaler.
+                    console.info('Partage annulé', error);
+                }
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(text);
+                alert('Liste copiée ! Colle-la dans un SMS ou un mail pour la garder.');
+            } catch (error) {
+                console.error('Copie impossible', error);
+                prompt('Copie cette liste pour la garder :', text);
+            }
+        }
+
+        /* ── Import / export CSV ─────────────────────────────────── */
+
+        /**
+         * Simplify a text to compare it or use it in a file name.
+         *
+         * FR : Simplifie un texte (sans accents ni ponctuation) pour le comparer ou nommer un fichier.
+         *
+         * @param {string} text - Texte d'origine.
+         * @param {string} joiner - Ce qui remplace les espaces et la ponctuation.
+         * @returns {string} Le texte simplifié, ex. « Mode de paiement » → « mode-de-paiement ».
+         */
+        function simplifyText(text, joiner) {
+            return text
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, joiner)
+                .replace(new RegExp(`^${joiner}|${joiner}$`, 'g'), '');
+        }
+
+        /**
+         * Quote a CSV cell when it contains a separator, a quote or a line break.
+         *
+         * FR : Met une cellule CSV entre guillemets si elle contient un séparateur, un guillemet ou un retour à la ligne.
+         *
+         * @param {string|number} value - Contenu de la cellule.
+         * @returns {string} La cellule prête à écrire.
+         */
+        function csvCell(value) {
+            const text = String(value ?? '');
+            if (!/[";\r\n]/.test(text)) {
+                return text;
+            }
+            return `"${text.replace(/"/g, '""')}"`;
+        }
+
+        /**
+         * Build the CSV file of the booklet, one line per client.
+         *
+         * FR : Construit le fichier CSV du carnet, une ligne par client.
+         *
+         * @returns {string} Le contenu du fichier.
+         */
+        function buildCsv() {
+            const rows = carnet.clients.map((client) => {
+                const pots = countPots(client.quantities);
+                return [
+                    carnet.seller, client.name, client.phone, client.address,
+                    ...FLAVORS.map((flavor) => client.quantities[flavor.key] || 0),
+                    pots, ((pots * PRICE_CENTS) / 100).toFixed(2).replace('.', ','),
+                    client.isPaid ? 'oui' : 'non',
+                    PAYMENT_LABELS[client.paymentMode] || '',
+                    client.isDelivered ? 'oui' : 'non',
+                ];
+            });
+            return CSV_BOM + [CSV_HEADERS, ...rows]
+                .map((row) => row.map(csvCell).join(CSV_SEPARATOR))
+                .join('\r\n');
+        }
+
+        /**
+         * Download the booklet as a CSV file.
+         *
+         * FR : Télécharge le carnet sous forme de fichier CSV.
+         */
+        function exportCsv() {
+            if (carnet.clients.length === 0) {
+                alert('Ton carnet est vide pour l’instant.');
+                return;
+            }
+            const blob = new Blob([buildCsv()], { type: 'text/csv;charset=utf-8' });
+            const link = document.createElement('a');
+            const sellerSlug = simplifyText(carnet.seller, '-') || 'vendeur';
+            link.href = URL.createObjectURL(blob);
+            // Date au format AAAA-MM-JJ : les sauvegardes se rangent dans l'ordre.
+            link.download = `carnet-caramels-${sellerSlug}-${new Date().toLocaleDateString('sv-SE')}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        }
+
+        /**
+         * Split a CSV text into rows of cells (quotes, « ; » or « , » separator).
+         *
+         * FR : Découpe un texte CSV en lignes de cellules (guillemets, séparateur « ; » ou « , »).
+         *
+         * @param {string} text - Contenu du fichier.
+         * @returns {Array<Array<string>>} Les lignes non vides.
+         */
+        function parseCsv(text) {
+            const content = text.replace(/^\uFEFF/, '');
+            const firstLine = content.split(/\r?\n/, 1)[0];
+            // Un fichier réenregistré par un tableur peut changer de séparateur.
+            const separator = firstLine.includes(';') ? ';' : ',';
+            const rows = [];
+            let row = [];
+            let cell = '';
+            let isQuoted = false;
+            for (let position = 0; position < content.length; position++) {
+                const character = content[position];
+                if (isQuoted) {
+                    if (character === '"' && content[position + 1] === '"') {
+                        cell += '"';
+                        position++;
+                    } else if (character === '"') {
+                        isQuoted = false;
+                    } else {
+                        cell += character;
+                    }
+                } else if (character === '"') {
+                    isQuoted = true;
+                } else if (character === separator) {
+                    row.push(cell);
+                    cell = '';
+                } else if (character === '\n' || character === '\r') {
+                    if (character === '\r' && content[position + 1] === '\n') {
+                        position++;
+                    }
+                    row.push(cell);
+                    rows.push(row);
+                    row = [];
+                    cell = '';
+                } else {
+                    cell += character;
+                }
+            }
+            row.push(cell);
+            rows.push(row);
+            return rows.filter((cells) => cells.some((cellText) => cellText.trim() !== ''));
+        }
+
+        /**
+         * Turn CSV rows into a booklet, matching columns by their header.
+         *
+         * FR : Transforme les lignes CSV en carnet, en retrouvant les colonnes par leur titre.
+         *
+         * @param {Array<Array<string>>} rows - Lignes du fichier, titres en premier.
+         * @returns {{seller: string, clients: Array<object>}} Le carnet lu.
+         * @throws {Error} Si le fichier est vide ou n'a pas de colonne « Nom ».
+         */
+        function rowsToCarnet(rows) {
+            if (rows.length === 0) {
+                throw new Error('le fichier est vide');
+            }
+            const [headerRow, ...dataRows] = rows;
+            const columnByHeader = Object.fromEntries(
+                headerRow.map((header, position) => [simplifyText(header, ''), position]));
+            if (!('nom' in columnByHeader)) {
+                throw new Error('colonne « Nom » introuvable');
+            }
+            const readCell = (cells, header) => (cells[columnByHeader[simplifyText(header, '')]] ?? '').trim();
+            const isYes = (text) => /^(oui|x|1|vrai|true|yes)$/i.test(text);
+            const clients = dataRows
+                .map((cells, position) => {
+                    const paymentText = simplifyText(readCell(cells, 'Mode de paiement'), '');
+                    return {
+                        id: `${Date.now()}-${position}`,
+                        name: readCell(cells, 'Nom'),
+                        phone: readCell(cells, 'Téléphone'),
+                        address: readCell(cells, 'Adresse'),
+                        quantities: Object.fromEntries(FLAVORS.map((flavor) =>
+                            [flavor.key, Math.max(0, parseInt(readCell(cells, flavor.name), 10) || 0)])),
+                        isPaid: isYes(readCell(cells, 'Payé')),
+                        paymentMode: paymentText.startsWith('cheque') ? 'cheque'
+                            : paymentText.startsWith('espece') ? 'especes' : '',
+                        isDelivered: isYes(readCell(cells, 'Livré')),
+                    };
+                })
+                .filter((client) => client.name);
+            const seller = dataRows.length > 0 ? readCell(dataRows[0], 'Vendeur') : '';
+            return { seller: seller || carnet.seller, clients };
+        }
+
+        /**
+         * Replace the booklet with the content of a CSV file, after confirmation.
+         *
+         * FR : Remplace le carnet par le contenu d'un fichier CSV, après confirmation.
+         *
+         * @param {File} file - Fichier choisi.
+         */
+        async function importCsv(file) {
+            let imported;
+            try {
+                imported = rowsToCarnet(parseCsv(await file.text()));
+            } catch (error) {
+                alert(`Impossible de lire ce fichier : ${error.message}.`);
+                return;
+            }
+            const importedCount = imported.clients.length;
+            if (importedCount === 0) {
+                alert('Aucun client trouvé dans ce fichier.');
+                return;
+            }
+            const currentCount = carnet.clients.length;
+            if (currentCount > 0 && !confirm(`Remplacer ton carnet actuel (${currentCount} client${currentCount > 1 ? 's' : ''}) par celui du fichier (${importedCount} client${importedCount > 1 ? 's' : ''}) ?`)) {
+                return;
+            }
+            carnet = imported;
+            saveCarnet();
+            sellerInput.value = carnet.seller;
+            backupDialog.close();
+            render();
+            alert(`✅ ${importedCount} client${importedCount > 1 ? 's' : ''} importé${importedCount > 1 ? 's' : ''}.`);
+        }
+
+        /* ── Impression / PDF ────────────────────────────────────── */
+
+        /**
+         * Fill the printable sheet: client table, totals and envelope summary.
+         *
+         * FR : Remplit la feuille imprimable : tableau des clients, totaux et contenu de l'enveloppe.
+         */
+        function renderPrintSheet() {
+            const totals = computeTotals();
+            const flavorHeads = FLAVORS
+                .map((flavor) => `<th class="parfum" style="--parfum:${flavor.color}">${flavor.name}</th>`)
+                .join('');
+            const clientRows = carnet.clients.map((client, position) => {
+                const pots = countPots(client.quantities);
+                const contact = [client.phone, client.address].filter(Boolean).map(escapeHtml).join(' – ');
+                const flavorCells = FLAVORS.map((flavor) => `<td>${client.quantities[flavor.key] || ''}</td>`).join('');
+                const paid = client.isPaid ? `✔ ${PAYMENT_LABELS[client.paymentMode] || ''}` : '';
+                return `<tr>
+                    <td>${position + 1}</td>
+                    <td class="print-client"><strong>${escapeHtml(client.name)}</strong>
+                        ${contact ? `<div class="print-contact">${contact.replace(/\n/g, ', ')}</div>` : ''}</td>
+                    ${flavorCells}
+                    <td><strong>${pots}</strong></td>
+                    <td>${formatEuros(pots * PRICE_CENTS)}</td>
+                    <td>${paid}</td>
+                    <td>${client.isDelivered ? '✔' : ''}</td>
+                </tr>`;
+            }).join('');
+            const flavorTotals = FLAVORS.map((flavor) => `<td>${totals.byFlavor[flavor.key]}</td>`).join('');
+            const cheques = totals.chequeCount > 0
+                ? ` · Chèques (${totals.chequeCount}) : ${formatEuros(totals.chequeCents)}` : '';
+            const unknownMode = totals.unknownModeCents > 0
+                ? ` · Mode non précisé : ${formatEuros(totals.unknownModeCents)}` : '';
+            document.getElementById('print-sheet').innerHTML = `
+                <div class="print-header">
+                    <img src="logo_apel.png" alt="Logo APEL" />
+                    <div>
+                        <p class="operation-label">APEL Notre Dame – Opération Caramels</p>
+                        <h1 class="title"><span class="small">Mon carnet de</span> ventes</h1>
+                    </div>
+                    <div class="print-seller">${escapeHtml(carnet.seller || '')}<br>
+                        <small>Imprimé le ${new Date().toLocaleDateString('fr-FR')}</small></div>
+                </div>
+                <table class="print-table">
+                    <thead><tr><th>N°</th><th>Client</th>${flavorHeads}<th>Pots</th><th>Montant</th><th>Payé</th><th>Livré</th></tr></thead>
+                    <tbody>
+                        ${clientRows}
+                        <tr class="print-total"><td colspan="2">Total</td>${flavorTotals}
+                            <td>${totals.pots}</td><td>${formatEuros(totals.dueCents)}</td><td colspan="2"></td></tr>
+                    </tbody>
+                </table>
+                <div class="print-summary">
+                    <p>💶 <strong>Encaissé : ${formatEuros(totals.paidCents)}</strong> (espèces : ${formatEuros(totals.cashCents)}${cheques}${unknownMode})</p>
+                    <p>💰 <strong>Ma cagnotte : ${formatEuros(totals.pots * SELLER_GAIN_CENTS)}</strong></p>
+                </div>`;
+        }
+
+        /**
+         * Print the booklet, or save it as PDF from the print window.
+         *
+         * FR : Imprime le carnet, ou l'enregistre en PDF depuis la fenêtre d'impression.
+         */
+        function printCarnet() {
+            if (carnet.clients.length === 0) {
+                alert('Ton carnet est vide pour l’instant.');
+                return;
+            }
+            renderPrintSheet();
+            window.print();
+        }
+
+        /* ── Protection des données sur le téléphone ─────────────── */
+
+        /**
+         * Tell whether the page runs on an iPhone or iPad.
+         *
+         * FR : Indique si la page tourne sur un iPhone ou un iPad.
+         *
+         * @returns {boolean} Vrai sur iPhone / iPad (les iPad récents se présentent comme des Mac tactiles).
+         */
+        function isAppleMobile() {
+            return /iPhone|iPad|iPod/.test(navigator.userAgent)
+                || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
+        /**
+         * Tell whether the page was opened from the home screen.
+         *
+         * FR : Indique si la page a été ouverte depuis l'écran d'accueil.
+         *
+         * @returns {boolean} Vrai si la page est lancée comme une application.
+         */
+        function isStandalone() {
+            return navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+        }
+
+        /**
+         * Ask the browser not to erase the booklet, and warn iPhone users.
+         *
+         * FR : Demande au navigateur de ne pas effacer le carnet, et prévient les utilisateurs d'iPhone.
+         */
+        function protectStorage() {
+            document.getElementById('install-hint').hidden = !(isAppleMobile() && !isStandalone());
+            navigator.storage?.persist?.();
+        }
+
+        /* ── Événements ──────────────────────────────────────────── */
+
+        /**
+         * Route every button click to its action.
+         *
+         * FR : Aiguille chaque clic de bouton vers son action.
+         *
+         * @param {MouseEvent} event - Le clic.
+         */
+        function handleClick(event) {
+            const button = event.target.closest('[data-action], [data-filter]');
+            if (!button) {
+                return;
+            }
+            if (button.dataset.filter) {
+                activeFilter = button.dataset.filter;
+                document.querySelectorAll('.filter').forEach((filter) => filter.classList.toggle('is-active', filter === button));
+                renderClients();
+                return;
+            }
+            const flavorKey = button.dataset.flavor;
+            const actions = {
+                'new-client': () => openClientForm(null),
+                'edit-client': () => openClientForm(button.dataset.id),
+                'delete-client': deleteEditedClient,
+                'toggle-paid': () => toggleClientField(button.dataset.id, 'isPaid'),
+                'toggle-delivered': () => toggleClientField(button.dataset.id, 'isDelivered'),
+                'increment': () => { draftQuantities[flavorKey] = (draftQuantities[flavorKey] || 0) + 1; renderSteppers(); },
+                'decrement': () => { draftQuantities[flavorKey] = Math.max(0, (draftQuantities[flavorKey] || 0) - 1); renderSteppers(); },
+                'close-dialog': () => button.closest('dialog').close(),
+                'recap': openRecap,
+                'share': shareList,
+                'backup': () => backupDialog.showModal(),
+                'export-csv': exportCsv,
+                'import-csv': () => importFileInput.click(),
+                'print': printCarnet,
+            };
+            actions[button.dataset.action]?.();
+        }
+
+        document.addEventListener('click', handleClick);
+        clientForm.addEventListener('submit', submitClientForm);
+
+        const sellerInput = document.getElementById('seller');
+        sellerInput.value = carnet.seller;
+        sellerInput.addEventListener('input', () => {
+            carnet.seller = sellerInput.value;
+            saveCarnet();
+        });
+
+        importFileInput.addEventListener('change', () => {
+            const [file] = importFileInput.files;
+            // Vidé tout de suite : on peut ainsi réimporter le même fichier.
+            importFileInput.value = '';
+            if (file) {
+                importCsv(file);
+            }
+        });
+
+        protectStorage();
+        render();
+    </script>
+</body>
+
+</html>
